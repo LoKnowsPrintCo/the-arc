@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Arc — Pitch Deck · Lo Slabach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1612;
+    --ink-soft: #4a3f35;
+    --ink-muted: #8a7968;
+    --parchment: #f7f3ec;
+    --parchment-warm: #ede8df;
+    --gold: #b8924a;
+    --gold-light: #d4b07a;
+    --gold-pale: #f0e4c8;
+    --slide-bg: #f9f6f1;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--parchment-warm);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--ink);
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .deck-wrapper {
+    width: 100%;
+    max-width: 900px;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding: 0 0.25rem;
+  }
+
+  .nav-dots { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--parchment-warm);
+    border: 1.5px solid var(--ink-muted);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .dot.active { background: var(--gold); border-color: var(--gold); }
+
+  .nav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.12em;
+  }
+
+  /* SLIDE SHELL */
+  .slide {
+    display: none;
+    background: var(--slide-bg);
+    border: 0.5px solid #d8cfc2;
+    border-radius: 4px;
+    min-height: 520px;
+    position: relative;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  .slide.active { display: flex; }
+
+  .slide-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 3.5rem 4rem;
+  }
+
+  .slide-number {
+    position: absolute;
+    top: 1.5rem; right: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+  }
+
+  .corner-mark {
+    position: absolute;
+    bottom: 1.5rem; left: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .gold-rule {
+    width: 48px; height: 1.5px;
+    background: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  .gold-rule.center { margin-left: auto; margin-right: auto; }
+
+  h1.hero {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 1.05;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  h1.hero em { font-style: italic; color: var(--gold); }
+
+  h2.slide-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  h2.slide-title em { font-style: italic; color: var(--gold); }
+
+  .body-text {
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .body-text strong { font-weight: 400; color: var(--ink); }
+
+  .large-quote {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .large-quote span { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-top: 1rem;
+  }
+
+  .author-line {
+    margin-top: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    padding-top: 2rem;
+  }
+
+  /* STAGE CARDS */
+  .stage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .stage-card {
+    padding: 1.25rem 1.5rem;
+    border-left: 2px solid var(--gold);
+    background: rgba(184,146,74,0.04);
+  }
+
+  .stage-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.4rem;
+  }
+
+  .stage-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.35rem;
+  }
+
+  .stage-sub {
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-bottom: 0.6rem;
+  }
+
+  .stage-marker {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.5;
+    border-top: 0.5px solid #d8cfc2;
+    padding-top: 0.65rem;
+  }
+
+  /* GATES */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 2.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .gate-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 0.65rem 0;
+    border-bottom: 0.5px solid #e5ddd0;
+  }
+  .gate-row:last-child { border-bottom: none; }
+
+  .gate-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--gold-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--gold);
+  }
+
+  .gate-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .gate-desc { font-size: 12px; color: var(--ink-muted); line-height: 1.5; }
+
+  /* LAYERS */
+  .layer-item {
+    padding: 1.1rem 1.4rem;
+    border: 0.5px solid #d8cfc2;
+    border-radius: 2px;
+    margin-bottom: 0.65rem;
+  }
+
+  .layer-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.3rem;
+  }
+
+  .layer-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  .layer-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* STAT CLUSTER */
+  .stat-cluster {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #d8cfc2;
+    border: 0.5px solid #d8cfc2;
+    margin-top: 1.5rem;
+  }
+
+  .stat-box { background: var(--slide-bg); padding: 1.25rem 1.5rem; }
+
+  .stat-num {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 38px;
+    font-weight: 400;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-label { font-size: 13px; color: var(--ink-muted); line-height: 1.5; }
+
+  /* DIFF TABLE */
+  .diff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 1.25rem;
+  }
+
+  .diff-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 0 0.75rem 0.75rem;
+    border-bottom: 1.5px solid var(--gold);
+  }
+  .diff-table th:first-child { padding-left: 0; }
+
+  .diff-table td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 0.5px solid #e5ddd0;
+    color: var(--ink-soft);
+    vertical-align: top;
+  }
+  .diff-table td:first-child { padding-left: 0; color: var(--ink-muted); font-style: italic; }
+  .diff-table td.arc-col { color: var(--ink); font-weight: 400; }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    border: 0.5px solid var(--gold-light);
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: var(--gold-pale);
+  }
+
+  /* PHASE ROW */
+  .phase-row { display: flex; gap: 1rem; margin-top: 1.5rem; }
+
+  .phase-box {
+    flex: 1;
+    padding: 1.1rem 1.2rem;
+    border-top: 2px solid var(--gold-light);
+  }
+  .phase-box.primary { border-top-color: var(--gold); }
+
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    margin-bottom: 0.4rem;
+  }
+
+  .phase-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 0.35rem;
+  }
+
+  .phase-desc { font-size: 13px; color: var(--ink-muted); line-height: 1.5; }
+
+  /* CLOSING */
+  .closing-large {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 46px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.12;
+    text-align: center;
+  }
+  .closing-large em { color: var(--gold); font-style: normal; }
+
+  /* ARC SVG */
+  .arc-svg { width: 100%; height: 110px; }
+
+  /* BG MOTIF */
+  .bg-motif {
+    position: absolute;
+    right: -40px; top: -40px;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  /* NAV BUTTONS */
+  .nav-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.75rem;
+  }
+
+  .nav-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    background: none;
+    border: 0.5px solid #d8cfc2;
+    padding: 8px 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .nav-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--gold-pale);
+  }
+
+  /* KEYBOARD HINT */
+  .key-hint {
+    text-align: center;
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+  }
+
+  /* SLIDE 3 CENTER */
+  .center-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* SLIDE 10 */
+  .closing-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0;
+  }
+
+  @media (max-width: 680px) {
+    .slide-inner { padding: 2rem 1.5rem; }
+    h1.hero { font-size: 44px; }
+    h2.slide-title { font-size: 26px; }
+    .stage-grid, .two-col, .stat-cluster, .phase-row { grid-template-columns: 1fr; flex-direction: column; }
+    .phase-row { flex-direction: column; }
+    .closing-large { font-size: 30px; }
+    .large-quote { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-wrapper">
+
+  <div class="nav">
+    <div class="nav-dots" id="dots"></div>
+    <div class="nav-label" id="slide-counter">01 / 10</div>
+  </div>
+
+  <!-- ── SLIDE 1 · COVER ── -->
+  <div class="slide active" id="slide-1">
+    <div class="slide-inner">
+      <svg class="bg-motif" width="400" height="400" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+        <circle cx="200" cy="200" r="190" stroke="#b8924a" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="140" stroke="#b8924a" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="90"  stroke="#b8924a" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="40"  stroke="#b8924a" stroke-width="0.5"/>
+      </svg>
+      <div class="eyebrow">A Framework for Human Development</div>
+      <h1 class="hero">The<br><em>Arc</em></h1>
+      <p class="hero-sub">Where are you in your story —<br>and what got you here?</p>
+      <div class="author-line">LO SLABACH · LO KNOWS PRINT CO LLC · MAY 2026</div>
+    </div>
+    <div class="slide-number">01</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 2 · THE PROBLEM ── -->
+  <div class="slide" id="slide-2">
+    <div class="slide-inner">
+      <div class="eyebrow">The Problem</div>
+      <div class="gold-rule"></div>
+      <h2 class="slide-title">Every personality tool tells you<br><em>what</em> you are.</h2>
+      <p class="body-text" style="max-width:540px; margin-top:1.5rem;">Nothing tells you <strong>where</strong> you are — or where you're going.</p>
+      <p class="body-text" style="max-width:540px; margin-top:1rem;">People are walking around with rich, complex inner lives and <strong>zero map</strong> for the developmental terrain they're crossing. They mistake arc-stage confusion for personality flaws. They pathologize growth. They feel behind on a timeline that was never theirs to begin with.</p>
+      <div style="margin-top:2rem; padding:1.5rem 2rem; border-left:2px solid var(--gold); background:rgba(184,146,74,0.05); max-width:540px;">
+        <p style="font-size:15px; color:var(--ink-muted); font-style:italic; line-height:1.6;">
+          Therapists see this. Coaches see this. Wise friends see this.<br>
+          <strong style="color:var(--ink); font-style:normal;">There is no product that sees this at scale.</strong>
+        </p>
+      </div>
+    </div>
+    <div class="slide-number">02</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 3 · THE INSIGHT ── -->
+  <div class="slide" id="slide-3">
+    <div class="slide-inner">
+      <div class="center-content">
+        <div class="gold-rule center"></div>
+        <p class="large-quote" style="max-width:580px;">
+          "Most frameworks answer:<br>
+          <span style="color:var(--ink-muted); font-style:normal;">What are you?</span><br><br>
+          The Arc answers:<br>
+          <span>Where are you in your story —</span><br>
+          and what got you here?"
+        </p>
+        <p style="margin-top:2.5rem; font-family:'DM Mono',monospace; font-size:11px; color:var(--ink-muted); letter-spacing:0.12em;">STATIC MAPS → DYNAMIC PLOT</p>
+        <svg class="arc-svg" viewBox="0 0 700 110" fill="none" style="margin-top:1rem;" aria-hidden="true">
+          <path d="M 60 90 Q 200 18 350 50 Q 500 82 640 12" stroke="#b8924a" stroke-width="1.5" fill="none"/>
+          <circle cx="60"  cy="90" r="6" fill="#d4b07a"/>
+          <circle cx="210" cy="35" r="6" fill="#b8924a"/>
+          <circle cx="350" cy="50" r="6" fill="#b8924a"/>
+          <circle cx="500" cy="68" r="6" fill="#b8924a"/>
+          <circle cx="640" cy="12" r="6" fill="#5a6b5c"/>
+          <text x="60"  y="106" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#8a7968" letter-spacing="0.05em">INHERITED</text>
+          <text x="210" y="25"  text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#8a7968" letter-spacing="0.05em">TESTED</text>
+          <text x="350" y="40"  text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#8a7968" letter-spacing="0.05em">CHOSEN</text>
+          <text x="640" y="28"  text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#5a6b5c" letter-spacing="0.05em">INTEGRATED</text>
+          <line x1="130" y1="22" x2="200" y2="35" stroke="#d8cfc2" stroke-width="0.5" stroke-dasharray="4,3"/>
+          <text x="130" y="17" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="10" fill="#8a7968" font-style="italic">loss gate</text>
+          <line x1="425" y1="32" x2="500" y2="68" stroke="#d8cfc2" stroke-width="0.5" stroke-dasharray="4,3"/>
+          <text x="430" y="27" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="10" fill="#8a7968" font-style="italic">rupture gate</text>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-number">03</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 4 · THE FOUR STAGES ── -->
+  <div class="slide" id="slide-4">
+    <div class="slide-inner">
+      <div class="eyebrow">The Framework</div>
+      <div class="gold-rule"></div>
+      <h2 class="slide-title">The Four <em>Stages</em></h2>
+      <p class="body-text" style="font-size:14px; color:var(--ink-muted); margin-bottom:1rem;">Stages are not ages. A 60-year-old can be in Stage 1. A 24-year-old can be in Stage 3.</p>
+      <div class="stage-grid">
+        <div class="stage-card">
+          <div class="stage-num">STAGE 01</div>
+          <div class="stage-name">The Inherited Self</div>
+          <div class="stage-sub">Who you were given</div>
+          <div class="stage-marker">"I am who I was raised to be" — whether that's comforting or suffocating.</div>
+        </div>
+        <div class="stage-card">
+          <div class="stage-num">STAGE 02</div>
+          <div class="stage-name">The Tested Self</div>
+          <div class="stage-sub">Who you became under pressure</div>
+          <div class="stage-marker">"I don't know who I am anymore" — which sounds like collapse, but is actually the beginning.</div>
+        </div>
+        <div class="stage-card">
+          <div class="stage-num">STAGE 03</div>
+          <div class="stage-name">The Chosen Self</div>
+          <div class="stage-sub">Who you decided to become</div>
+          <div class="stage-marker">"I know what I stand for" — even if the world hasn't caught up yet.</div>
+        </div>
+        <div class="stage-card">
+          <div class="stage-num">STAGE 04</div>
+          <div class="stage-name">The Integrated Self</div>
+          <div class="stage-sub">Who you finally stopped fighting</div>
+          <div class="stage-marker">"I can see the shape of my life" — and it doesn't need to be different than it is.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-number">04</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 5 · EXPERIENCE GATES ── -->
+  <div class="slide" id="slide-5">
+    <div class="slide-inner">
+      <div class="eyebrow">The Mechanism</div>
+      <div class="gold-rule"></div>
+      <h2 class="slide-title">Experience <em>Gates</em></h2>
+      <p class="body-text" style="font-size:15px; margin-bottom:1rem;">The thresholds that force movement. They are the plot events that change the character.</p>
+      <div class="two-col">
+        <div>
+          <div class="gate-row">
+            <div class="gate-icon">◈</div>
+            <div><div class="gate-name">Loss</div><div class="gate-desc">Grief as teacher. Identity stripped of what it was attached to.</div></div>
+          </div>
+          <div class="gate-row">
+            <div class="gate-icon">◈</div>
+            <div><div class="gate-name">Failure</div><div class="gate-desc">The gap between self-concept and reality. Humility as prerequisite.</div></div>
+          </div>
+          <div class="gate-row">
+            <div class="gate-icon">◈</div>
+            <div><div class="gate-name">Rupture &amp; Repair</div><div class="gate-desc">A relationship broken and consciously rebuilt.</div></div>
+          </div>
+          <div class="gate-row">
+            <div class="gate-icon">◈</div>
+            <div><div class="gate-name">Chosen Family</div><div class="gate-desc">Belonging that is earned and selected.</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="gate-row">
+            <div class="gate-icon">◈</div>
+            <div><div class="gate-name">Sacrifice</div><div class="gate-desc">Values made concrete by cost.</div></div>
+          </div>
+          <div class="gate-row">
+            <div class="gate-icon">◈</div>
+            <div><div class="gate-name">Education</div><div class="gate-desc">Any encounter that reorganizes how you think.</div></div>
+          </div>
+          <div class="gate-row">
+            <div class="gate-icon">◈</div>
+            <div><div class="gate-name">Responsibility for Another</div><div class="gate-desc">Parenthood, caregiving — someone depends on you.</div></div>
+          </div>
+          <div class="gate-row" style="border:none;">
+            <div class="gate-icon" style="color:var(--gold);">+</div>
+            <div><div class="gate-name" style="color:var(--ink-muted);">And more...</div><div class="gate-desc">Gates are identified by their effect: did this reorganize identity?</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-number">05</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 6 · THE PLATFORM ── -->
+  <div class="slide" id="slide-6">
+    <div class="slide-inner">
+      <div class="eyebrow">The Solution</div>
+      <div class="gold-rule"></div>
+      <h2 class="slide-title">A living narrative<br><em>intelligence platform</em></h2>
+      <div style="margin-top:1rem;">
+        <div class="layer-item">
+          <div class="layer-num">LAYER 01</div>
+          <div class="layer-name">The Assessment</div>
+          <div class="layer-desc">Who are you, and where are you in the story? Personality foundation + arc stage + emotional age + gates already passed. Output: a <em>living character profile</em> — not a static result, but a coordinate on a map that moves with you.</div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">LAYER 02</div>
+          <div class="layer-name">The Tracker</div>
+          <div class="layer-desc">Log life events in real time. Watch your arc position update. Receive gentle pattern nudges. Visualize your story as a plot — with chapters, thresholds, and 7-year cycle intelligence built in.</div>
+        </div>
+        <div class="layer-item">
+          <div class="layer-num">LAYER 03</div>
+          <div class="layer-name">The Diary</div>
+          <div class="layer-desc">Reflective journaling prompted by arc stage and logged events. Private by default, shareable by choice. Over time: a personal narrative archive — the actual story, in the person's own words.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-number">06</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 7 · THE DATA VISION ── -->
+  <div class="slide" id="slide-7">
+    <div class="slide-inner">
+      <div class="eyebrow">The Data Vision</div>
+      <div class="gold-rule"></div>
+      <h2 class="slide-title">The <em>23andMe</em> of the inner life</h2>
+      <p class="body-text" style="max-width:560px;">Individual data is meaningful. <strong>Collective data is transformative.</strong></p>
+      <div class="stat-cluster">
+        <div class="stat-box">
+          <div class="stat-num">1st</div>
+          <div class="stat-label">large-scale dataset of human developmental experience mapped to personality type and life events</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="font-size:26px; padding-top:4px; line-height:1.2;">Pattern<br>intelligence</div>
+          <div class="stat-label">When do people transition from Stage 2 to Stage 3? Predictive modeling for each profile type.</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="font-size:26px; padding-top:4px; line-height:1.2;">Research<br>partners</div>
+          <div class="stat-label">Developmental psychology, sociology, and public health institutions</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="font-size:26px; padding-top:4px; line-height:1.2;">Community<br>resonance</div>
+          <div class="stat-label">"X others with your profile passed through this gate at a similar time"</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-number">07</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 8 · DIFFERENTIATION ── -->
+  <div class="slide" id="slide-8">
+    <div class="slide-inner">
+      <div class="eyebrow">Market Position</div>
+      <div class="gold-rule"></div>
+      <h2 class="slide-title">What The Arc <em>does differently</em></h2>
+      <table class="diff-table">
+        <thead>
+          <tr>
+            <th>What exists</th>
+            <th>What's missing</th>
+            <th style="color:var(--gold);">What The Arc does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Personality tests (static)</td>
+            <td>Movement over time</td>
+            <td class="arc-col">Dynamic arc tracking</td>
+          </tr>
+          <tr>
+            <td>Journaling apps</td>
+            <td>Meaning-making framework</td>
+            <td class="arc-col">Prompted by arc stage</td>
+          </tr>
+          <tr>
+            <td>Life coaching</td>
+            <td>Scalable, accessible</td>
+            <td class="arc-col">Self-guided with intelligence</td>
+          </tr>
+          <tr>
+            <td>Therapy</td>
+            <td>Pattern data across users</td>
+            <td class="arc-col">Community developmental data</td>
+          </tr>
+          <tr>
+            <td>Astrology / Human Design</td>
+            <td>Psychological grounding</td>
+            <td class="arc-col">Intuitive AND rigorous</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tag-row">
+        <div class="tag">NOT CLINICAL</div>
+        <div class="tag">NOT SELF-HELP</div>
+        <div class="tag">NOT WOO</div>
+        <div class="tag">PSYCHOLOGY × STORYTELLING × LIVED EXPERIENCE</div>
+      </div>
+    </div>
+    <div class="slide-number">08</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 9 · PHASE 1 / GO TO MARKET ── -->
+  <div class="slide" id="slide-9">
+    <div class="slide-inner">
+      <div class="eyebrow">Go-to-Market</div>
+      <div class="gold-rule"></div>
+      <h2 class="slide-title">Phase 1 — <em>The Website</em></h2>
+      <p class="body-text" style="max-width:520px;">Before the platform, before the data, before the partnerships: a website where you can take the test and plot yourself on the arc. <strong>Simple. Beautiful. Enough.</strong></p>
+      <div class="phase-row">
+        <div class="phase-box primary">
+          <div class="phase-label">PHASE 01 — NOW</div>
+          <div class="phase-title">The Assessment Site</div>
+          <div class="phase-desc">One test. One result. One map with your coordinate. A place to log your first gate. An invitation to come back.</div>
+        </div>
+        <div class="phase-box">
+          <div class="phase-label">PHASE 02 — GROWTH</div>
+          <div class="phase-title">The Platform</div>
+          <div class="phase-desc">Tracker + Diary. Longitudinal data. Pattern nudges. 7-year cycle intelligence. Coach and therapist integrations.</div>
+        </div>
+        <div class="phase-box">
+          <div class="phase-label">PHASE 03 — SCALE</div>
+          <div class="phase-title">The Dataset</div>
+          <div class="phase-desc">Community developmental data. Research partnerships. Predictive modeling. Shared story intelligence.</div>
+        </div>
+      </div>
+      <p style="margin-top:1.5rem; font-size:13px; color:var(--ink-muted); font-style:italic; line-height:1.6;">Primary: Adults in active transition — career pivots, grief, becoming a parent, leaving a religion, surviving a decade.<br>Secondary: Therapists, coaches, and facilitators who want a shared language for developmental work.</p>
+    </div>
+    <div class="slide-number">09</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- ── SLIDE 10 · CLOSING ── -->
+  <div class="slide" id="slide-10">
+    <div class="slide-inner">
+      <div class="closing-inner">
+        <div class="gold-rule center"></div>
+        <p class="closing-large">
+          "People are not problems<br>
+          to be solved or types<br>
+          to be categorized.<br><br>
+          They are <em>characters</em><br>
+          in an unfolding story."
+        </p>
+        <p style="margin-top:2.5rem; font-family:'DM Mono',monospace; font-size:11px; color:var(--ink-muted); letter-spacing:0.15em;">THE ARC · BECAUSE EVERY STORY HAS ONE</p>
+        <p style="margin-top:3rem; font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-muted); letter-spacing:0.1em;">LO SLABACH · LO KNOWS PRINT CO LLC · MAY 2026</p>
+      </div>
+    </div>
+    <div class="slide-number">10</div>
+    <div class="corner-mark">THE ARC</div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prev-btn">← PREV</button>
+    <button class="nav-btn" id="next-btn">NEXT →</button>
+  </div>
+  <p class="key-hint">Use arrow keys to navigate</p>
+
+</div><!-- /deck-wrapper -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('slide-counter');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(idx) {
+    const dots = document.querySelectorAll('.dot');
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (idx + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    counter.textContent =
+      String(current + 1).padStart(2, '0') + ' / ' +
+      String(slides.length).padStart(2, '0');
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('next-btn').addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+</script>
+
+</body>
+</html>
